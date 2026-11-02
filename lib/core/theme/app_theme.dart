@@ -12,14 +12,15 @@ abstract final class AppTheme {
 
   /// Returns the configured dark [ThemeData] for Block Puzzle.
   static ThemeData get darkTheme {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      brightness: Brightness.dark,
-    ).copyWith(
-      primary: primaryColor,
-      secondary: secondaryColor,
-      surface: surfaceColor,
-    );
+    final colorScheme =
+        ColorScheme.fromSeed(
+          seedColor: primaryColor,
+          brightness: Brightness.dark,
+        ).copyWith(
+          primary: primaryColor,
+          secondary: secondaryColor,
+          surface: surfaceColor,
+        );
 
     return ThemeData(
       useMaterial3: true,
@@ -38,12 +39,8 @@ abstract final class AppTheme {
           letterSpacing: 1.2,
           color: Colors.white,
         ),
-        bodyLarge: TextStyle(
-          fontSize: 16,
-          color: Colors.white70,
-        ),
+        bodyLarge: TextStyle(fontSize: 16, color: Colors.white70),
       ),
     );
   }
 }
-

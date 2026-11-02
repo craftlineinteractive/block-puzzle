@@ -12,9 +12,5 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(
-    const ProviderScope(
-      child: BlockPuzzleApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: BlockPuzzleApp()));
 }

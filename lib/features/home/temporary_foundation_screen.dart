@@ -16,19 +16,12 @@ class TemporaryFoundationScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'BLOCK PUZZLE',
-              style: textTheme.headlineMedium,
-            ),
+            Text('BLOCK PUZZLE', style: textTheme.headlineMedium),
             const SizedBox(height: 12),
-            Text(
-              'Project foundation ready.',
-              style: textTheme.bodyLarge,
-            ),
+            Text('Project foundation ready.', style: textTheme.bodyLarge),
           ],
         ),
       ),
     );
   }
 }
-

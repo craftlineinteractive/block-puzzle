@@ -17,4 +17,3 @@ class BlockPuzzleApp extends StatelessWidget {
     );
   }
 }
-
