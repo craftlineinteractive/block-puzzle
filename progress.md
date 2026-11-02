@@ -1,34 +1,29 @@
-# Progress Log: Block Puzzle - Phase 02B
+# Progress Log: Block Puzzle - Phase 03A
 
 ## Current Project Status
-- **Current Phase**: Phase 02B - Asset Validation, Design System Audit and Systematic Debugging
-- **Status**: Completed & Verified on Emulator
+- **Current Phase**: Phase 03A - Splash Screen, Home Screen and Navigation Implementation
+- **Status**: Completed & Verified on Emulator (`emulator-5554`)
 
 ## Standing Instruction
-- **Auto-Deploy on Phase Completion**: Build and install updated APK to `emulator-5554` upon completion. [COMPLETED for Phase 02B]
+- **Auto-Deploy on Phase Completion**: Build and install updated APK to `emulator-5554` upon completion. [COMPLETED for Phase 03A]
 
 ## Completed Tasks
-- [x] Initiated Phase 02B audit and verification tasks.
-- [x] Created Phase 02B task plan in `task_plan.md`.
-- [x] Audited `BlockPuzzle_Asset_Library/`: verified 6 zip archives, 6 extracted directories, and 2 variable fonts are 100% intact and untouched.
-- [x] Enhanced `tooling/verify_assets.py` to an 8-check comprehensive integrity verification suite:
-  1. JSON manifest schema validation (`docs/asset_manifest.json`)
-  2. Relative path hygiene, boundary check, and extension whitelisting
-  3. Production snake_case naming conventions
-  4. Physical file presence on disk
-  5. SHA256 cryptographic checksums & exact byte-size validation
-  6. Redundant duplicate content detection
-  7. Forbidden file scan (`.zip`, `.rar`, `.svg`, `preview.png`)
-  8. Unmanifested orphan asset detection
-- [x] Executed `python tooling/verify_assets.py` (Passed: 38/38 assets, 0 errors).
-- [x] Verified licenses: Kenney CC0 (`docs/licenses/KENNEY_CC0_LICENSE.txt`) and SIL Open Font License 1.1 (`docs/licenses/SIL_OPEN_FONT_LICENSE.txt`).
-- [x] Created `test/core/constants/asset_bundle_load_test.dart` to verify binary loading via `rootBundle.load` for fonts, icons, particles, and audio.
-- [x] Executed full test suite (`flutter test`) - all 23 tests passed cleanly.
-- [x] Executed code formatting (`dart format .`) and static analysis (`flutter analyze` - 0 issues found).
-- [x] Added interactive preview button to `TemporaryFoundationScreen` linking to `DesignSystemPreview`.
-- [x] Built debug APK with `flutter build apk --debug`.
-- [x] Managed emulator storage threshold and streamed install to active emulator (`emulator-5554`).
-- [x] Launched app and verified live rendering via screen capture (`emulator_phase2b.png`, `emulator_phase2b_design_system.png`, `emulator_phase2b_design_system_scrolled.png`).
+- [x] Installed `go_router: ^18.1.2` via `flutter pub add go_router`.
+- [x] Defined centralized routes in `lib/app/router/app_routes.dart`.
+- [x] Created declarative router with smooth fade & slide transitions and 404 error screen in `lib/app/router/app_router.dart`.
+- [x] Updated `BlockPuzzleApp` to use `MaterialApp.router` with Riverpod `appRouterProvider` while preserving widget test overrides.
+- [x] Built reusable `FeaturePlaceholderScreen` in `lib/shared/widgets/feature_placeholder_screen.dart` with honest "in development" status, route-specific descriptions, and accessible "Back to Home" navigation.
+- [x] Created animated `SplashScreen` (`puzzle_logo_mark.dart`, `splash_tile_animation.dart`, `splash_screen.dart`) featuring interlocking polyomino logo mark, Fredoka title, Nunito tagline, single-shot navigation guard, and system reduced-motion support.
+- [x] Created casual arcade `HomeScreen` (`home_header.dart`, `home_hero_card.dart`, `game_mode_card.dart`, `game_modes_section.dart`, `home_shortcut_tile.dart`, `home_background_decoration.dart`, `home_screen.dart`) with zero RenderFlex overflow and minimum 48dp touch targets.
+- [x] Added unit and widget tests:
+  - `test/app/router/app_router_test.dart`
+  - `test/features/splash/splash_screen_test.dart`
+  - `test/features/home/home_screen_test.dart`
+  - `test/shared/widgets/feature_placeholder_screen_test.dart`
+- [x] Executed full test suite: **All 41 tests passed cleanly**.
+- [x] Executed static analysis: `flutter analyze` reports **0 issues**.
+- [x] Built debug APK: `flutter build apk --debug` succeeded.
+- [x] Deployed and verified on active Android emulator (`emulator-5554`).
 
 ## Next Actions (Pending User Direction)
-- Await user approval and prompt for **Phase 03: Core Game Architecture & Game Loop Setup**.
+- Await user approval and prompt for **Phase 03B: UI Verification & Comprehensive Audit** or **Phase 04: Core Game Engine Setup**.

@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:blockpuzzle/app/block_puzzle_app.dart';
 import 'package:blockpuzzle/core/theme/app_theme.dart';
-import 'package:blockpuzzle/features/home/temporary_foundation_screen.dart';
+import 'package:blockpuzzle/features/splash/presentation/splash_screen.dart';
 
 void main() {
   group('Block Puzzle Foundation & App Startup Tests', () {
@@ -43,14 +43,14 @@ void main() {
       },
     );
 
-    testWidgets('TemporaryFoundationScreen renders expected text and layout', (
+    testWidgets('BlockPuzzleApp mounts SplashScreen at initial route', (
       tester,
     ) async {
       await tester.pumpWidget(const ProviderScope(child: BlockPuzzleApp()));
 
-      expect(find.byType(TemporaryFoundationScreen), findsOneWidget);
+      expect(find.byType(SplashScreen), findsOneWidget);
       expect(find.text('BLOCK PUZZLE'), findsOneWidget);
-      expect(find.text('Project foundation ready.'), findsOneWidget);
+      expect(find.text('PLACE. CLEAR. REPEAT.'), findsOneWidget);
     });
 
     testWidgets(
