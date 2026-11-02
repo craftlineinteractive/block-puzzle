@@ -52,4 +52,3 @@ abstract final class AppColors {
     blockCyan,
   ];
 }
-

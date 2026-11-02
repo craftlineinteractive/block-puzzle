@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 """
-verify_assets.py - Validates production asset integrity for Block Puzzle.
+verify_assets.py - Comprehensive production asset integrity validator for Block Puzzle.
 
 Verification checks:
-1. Every manifest asset file exists on disk.
-2. Every asset SHA256 matches the manifest checksum.
-3. No duplicate destination production paths exist.
-4. No duplicate content (identical SHA256) unnecessarily bundled across distinct paths.
-5. All target files reside strictly within the production assets/ directory.
-6. File extensions match their documented categories (font=.ttf, ui_icon/particle=.png, audio_sfx=.ogg).
+1. Manifest structure and required fields completeness.
+2. Every manifest asset exists on disk.
+3. Every asset SHA256 cryptographic hash matches the manifest record.
+4. No duplicate destination production paths exist.
+5. No duplicate content (identical SHA256) unnecessarily bundled across distinct paths.
+6. All target files reside strictly within the production assets/ directory.
+7. File extensions match their documented categories (font=.ttf, ui_icon/particle=.png, audio_sfx=.ogg).
+8. Strict naming conventions:
+   - Fonts: PascalCase (e.g., Fredoka.ttf, Nunito.ttf)
+   - Icons: icon_<name>.png (lowercase snake_case)
+   - Particles: particle_<name>.png (lowercase snake_case)
+   - Audio: sfx_<name>.ogg (lowercase snake_case)
+9. No forbidden files (archives, preview graphics, temporary files) exist anywhere in assets/.
+10. No unmanifested orphan assets exist in assets/.
 """
 
 import sys
 import os
 import json
 import hashlib
+import re
 
 MANIFEST_PATH = os.path.join("docs", "asset_manifest.json")
 PRODUCTION_ROOT = "assets"
@@ -26,44 +35,75 @@ EXPECTED_EXTENSIONS = {
     "audio_sfx": {".ogg", ".wav", ".mp3"},
 }
 
+FORBIDDEN_EXTENSIONS = {".zip", ".tar", ".gz", ".7z", ".rar", ".unitypackage", ".bak", ".tmp", ".svg"}
+FORBIDDEN_BASENAMES = {"preview.png", "preview.ogg", "sample.png", "thumbs.db", ".ds_store"}
+
+NAMING_PATTERNS = {
+    "font": re.compile(r"^[A-Z][a-zA-Z0-9]+\.(ttf|otf)$"),
+    "ui_icon": re.compile(r"^icon_[a-z0-9_]+\.png$"),
+    "particle": re.compile(r"^particle_[a-z0-9_]+\.png$"),
+    "audio_sfx": re.compile(r"^sfx_[a-z0-9_]+\.(ogg|wav|mp3)$"),
+}
+
+REQUIRED_MANIFEST_FIELDS = [
+    "path",
+    "originalName",
+    "sourcePack",
+    "sourceRelativePath",
+    "category",
+    "purpose",
+    "consumingPhase",
+    "license",
+    "sha256",
+    "sizeBytes",
+]
+
 def verify_assets() -> int:
-    print(f"[1/6] Loading manifest from {MANIFEST_PATH}...")
+    print(f"[1/8] Loading and validating manifest schema from {MANIFEST_PATH}...")
     if not os.path.exists(MANIFEST_PATH):
         print(f"ERROR: Manifest missing at {MANIFEST_PATH}")
         return 1
 
-    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    try:
+        with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"ERROR: Failed to parse manifest JSON: {e}")
+        return 1
 
     assets = data.get("assets", [])
+    if not assets:
+        print("ERROR: Manifest contains no asset entries.")
+        return 1
+
     print(f"      Loaded {len(assets)} asset records.")
 
+    errors = []
     seen_paths = set()
     sha_to_paths = {}
-    errors = []
 
-    print("[2/6] Validating path hygiene and boundaries...")
+    # Validate schema
     for idx, item in enumerate(assets):
-        path = item.get("path")
-        category = item.get("category")
-        expected_sha = item.get("sha256")
+        for field in REQUIRED_MANIFEST_FIELDS:
+            if field not in item or item[field] is None or item[field] == "":
+                errors.append(f"Asset #{idx} missing required field '{field}'")
 
-        if not path:
-            errors.append(f"Item #{idx}: missing 'path' property.")
-            continue
-
+    print("[2/8] Validating path hygiene, boundaries, and extensions...")
+    for item in assets:
+        path = item.get("path", "")
+        category = item.get("category", "")
         normalized_path = os.path.normpath(path).replace("\\", "/")
 
-        # 5. Check files are inside production assets directory
+        # Check boundary
         if not normalized_path.startswith(f"{PRODUCTION_ROOT}/"):
             errors.append(f"Security: Asset '{normalized_path}' is outside '{PRODUCTION_ROOT}/'")
 
-        # 3. Check for duplicate production paths
+        # Check uniqueness
         if normalized_path in seen_paths:
             errors.append(f"Duplicate path in manifest: '{normalized_path}'")
         seen_paths.add(normalized_path)
 
-        # 6. Check file extensions match category
+        # Check category extension
         ext = os.path.splitext(normalized_path)[1].lower()
         allowed_exts = EXPECTED_EXTENSIONS.get(category)
         if allowed_exts and ext not in allowed_exts:
@@ -71,17 +111,36 @@ def verify_assets() -> int:
                 f"Type mismatch: '{normalized_path}' (category: '{category}') has unexpected extension '{ext}'"
             )
 
-    print("[3/6] Verifying file presence on disk...")
+    print("[3/8] Checking production naming conventions...")
     for item in assets:
-        path = item.get("path")
+        path = item.get("path", "")
+        category = item.get("category", "")
+        filename = os.path.basename(path)
+        pattern = NAMING_PATTERNS.get(category)
+        if pattern and not pattern.match(filename):
+            errors.append(
+                f"Naming convention violation: '{filename}' does not match pattern for category '{category}'"
+            )
+
+    print("[4/8] Verifying file presence on disk...")
+    for item in assets:
+        path = item.get("path", "")
         if not os.path.exists(path):
             errors.append(f"Missing file on disk: '{path}'")
 
-    print("[4/6] Verifying cryptographic SHA256 checksums...")
+    print("[5/8] Verifying cryptographic SHA256 checksums & file sizes...")
     for item in assets:
-        path = item.get("path")
-        expected_sha = item.get("sha256")
+        path = item.get("path", "")
+        expected_sha = item.get("sha256", "")
+        expected_size = item.get("sizeBytes", 0)
+
         if os.path.exists(path):
+            actual_size = os.path.getsize(path)
+            if actual_size != expected_size:
+                errors.append(
+                    f"Size mismatch for '{path}': expected {expected_size} bytes, got {actual_size} bytes"
+                )
+
             hasher = hashlib.sha256()
             with open(path, "rb") as f:
                 while chunk := f.read(65536):
@@ -91,16 +150,24 @@ def verify_assets() -> int:
                 errors.append(
                     f"Checksum mismatch for '{path}': expected {expected_sha}, got {actual_sha}"
                 )
-            
-            # Group by sha to detect unnecessary duplicate files
+
             sha_to_paths.setdefault(actual_sha, []).append(path)
 
-    print("[5/6] Checking for redundant content duplicates...")
+    print("[6/8] Checking for redundant content duplicates...")
     for sha, paths in sha_to_paths.items():
         if len(paths) > 1:
             errors.append(f"Redundant duplicate content with SHA256 {sha}: {paths}")
 
-    print("[6/6] Checking for unmanifested orphan assets in assets/...")
+    print("[7/8] Scanning for forbidden files in production tree...")
+    for root, _, files in os.walk(PRODUCTION_ROOT):
+        for f in files:
+            ext = os.path.splitext(f)[1].lower()
+            if ext in FORBIDDEN_EXTENSIONS:
+                errors.append(f"Forbidden file extension found: '{os.path.join(root, f)}'")
+            if f.lower() in FORBIDDEN_BASENAMES:
+                errors.append(f"Forbidden preview/sample file found: '{os.path.join(root, f)}'")
+
+    print("[8/8] Scanning for unmanifested orphan assets in assets/...")
     disk_assets = set()
     for root, _, files in os.walk(PRODUCTION_ROOT):
         for f in files:
@@ -117,9 +184,8 @@ def verify_assets() -> int:
             print(f"  - {err}")
         return 1
 
-    print("\nSUCCESS: All 38 production assets verified successfully with 0 errors!")
+    print(f"\nSUCCESS: All {len(assets)} production assets verified successfully across all 8 checks with 0 errors!")
     return 0
 
 if __name__ == "__main__":
     sys.exit(verify_assets())
-

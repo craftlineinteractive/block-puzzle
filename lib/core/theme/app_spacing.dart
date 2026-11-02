@@ -43,4 +43,3 @@ abstract final class AppSpacing {
   static const EdgeInsets verticalMd = EdgeInsets.symmetric(vertical: md);
   static const EdgeInsets verticalLg = EdgeInsets.symmetric(vertical: lg);
 }
-
