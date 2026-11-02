@@ -1,54 +1,71 @@
-# Task Plan: Block Puzzle - Phase 01 (Foundation, Audit, Debugging & Verification)
+# Task Plan: Block Puzzle - Phase 02A (Asset Integration & Reusable Game Design System)
 
-## Phase 01 Objective
-Establish and verify a clean, scalable architectural foundation for the Block Puzzle project. Ensure all codebase structures, state management mechanisms, theme foundations, startup configurations, Clean Architecture boundaries, test suites, and build pipelines are verified with concrete, reproducible evidence.
+## Phase 02A Objective
+Safely curate, vendor, and organize game assets from `BlockPuzzle_Asset_Library` into the production `assets/` directory without touching original download archives. Implement a centralized, scalable, premium dark arcade Game Design System in Flutter (`AppColors`, `AppSpacing`, `AppRadii`, `AppTypography`, `AppTheme`), register offline-capable fonts (Fredoka and Nunito), configure centralized asset constants (`AssetPaths`), establish license provenance (`docs/ASSET_LICENSES.md`, `docs/ASSET_CATALOG.md`, `docs/asset_manifest.json`), implement automated asset integrity validation (`tooling/verify_assets.py`), and deliver a responsive development design preview component (`DesignSystemPreview`) with automated test coverage.
 
 ## Current Project Architecture
 - **Framework**: Flutter 3.44.9 (Channel stable)
 - **Dart SDK**: 3.12.2 (Environment sdk: ^3.12.2)
-- **Platform Targets**: Android (namespace `com.craftlineinteractive.blockpuzzle`, AGP 9.0.1, Kotlin 2.3.20), iOS (Runner `blockpuzzle`)
-- **Direct Dependencies**: `flutter`, `cupertino_icons: ^1.0.8`, `flutter_riverpod: ^3.4.3`
+- **Dependencies**: `flutter`, `cupertino_icons: ^1.0.8`, `flutter_riverpod: ^3.4.3`
 - **Dev Dependencies**: `flutter_test`, `flutter_lints: ^6.0.0`
-- **Asset Repositories**:
-  - `BlockPuzzle_Asset_Library/`: External raw asset source containing Downloads, Extracted, and Fonts. Strictly untouched.
-  - `assets/`: Production-curated assets destination (empty in Phase 01).
+- **Asset Sources**:
+  - `BlockPuzzle_Asset_Library/`: Read-only source containing Downloads, Extracted, and Fonts. Strictly untouched.
+  - `assets/`: Destination for selected, optimized, semantic production assets (38 production files).
 
-## Implementation & Audit Status
+## Implementation Status
 
-### Phase 01A: Foundation & Architecture Setup
-- [x] Inspect Flutter & Dart SDK versions.
-- [x] Inspect `pubspec.yaml`, `pubspec.lock`, and `analysis_options.yaml`.
-- [x] Inspect Android and iOS native project configs.
-- [x] Audit `assets/` and `BlockPuzzle_Asset_Library/` directories.
-- [x] Resolve stable Riverpod (`3.4.3`) without code generation.
-- [x] Create foundational directory structure across `app/`, `core/`, `game_engine/`, `features/`, `services/`, and `shared/`.
-- [x] Create foundation M3 dark theme (`lib/core/theme/app_theme.dart`).
-- [x] Create temporary foundation screen (`lib/features/home/temporary_foundation_screen.dart`).
-- [x] Create root application widget (`lib/app/block_puzzle_app.dart`).
-- [x] Configure minimal bootstrap with portrait orientation lock and `ProviderScope` (`lib/main.dart`).
-- [x] Write architectural documentation (`docs/architecture.md`).
+### 1. Planning & Pre-Modification Audit
+- [x] Inspect existing Phase 01 architecture (`lib/`, `test/`, `pubspec.yaml`, `docs/architecture.md`).
+- [x] Recursively inventory `BlockPuzzle_Asset_Library/` (archives, fonts, images, sounds, licenses).
+- [x] Create and maintain `task_plan.md` and `progress.md`.
 
-### Phase 01B: Architecture Audit, Debugging & Verification
-- [x] Complete implementation & architectural boundary review.
-- [x] Perform dependency audit on `flutter_riverpod` (`3.4.3`) and Dart SDK compatibility.
-- [x] Remove obsolete template test and implement comprehensive test suite (`test/app/app_smoke_test.dart`).
-- [x] Run `flutter pub get` (exit code 0).
-- [x] Run `dart format .` (exit code 0, all files formatted).
-- [x] Run `flutter analyze` (exit code 0, 0 issues found).
-- [x] Run `flutter test` (exit code 0, 5/5 tests passed).
-- [x] Run `flutter build apk --debug` (exit code 0, debug APK built successfully).
-- [x] Confirm `BlockPuzzle_Asset_Library/` remains 100% untouched.
+### 2. Asset Selection & Safe Copying
+- [x] Fonts: Copied `Fredoka.ttf` and `Nunito.ttf` (Variable TTF, OFL 1.1) to `assets/fonts/`.
+- [x] Icons: Selected 18 transparent white 2x standalone PNGs from `kenney_game-icons` and copied to `assets/images/ui/icons/`.
+- [x] VFX Particles: Selected 6 transparent particle PNGs (sparks, stars, flares, glow circle) from `kenney_particle-pack` and copied to `assets/images/effects/particles/`.
+- [x] Audio: Selected 10 semantic OGG sound effects (UI click, placement, clear, combo, jingles) to `assets/audio/`.
+- [x] Verified zero files in `BlockPuzzle_Asset_Library/` were moved, modified, or deleted (`git status` clean).
 
-## Phase 01 Final Acceptance Criteria Verification
-1. [x] Folder structure adheres to Clean Architecture and Feature-First organization.
-2. [x] Riverpod is initialized cleanly with `ProviderScope` in `main.dart`.
-3. [x] Application startup succeeds without runtime exceptions.
-4. [x] Temporary foundation screen displays "BLOCK PUZZLE" and "Project foundation ready."
-5. [x] Theme configuration (`AppTheme.darkTheme`) properly loaded with Material 3.
-6. [x] Comprehensive architecture documentation exists in `docs/architecture.md`.
-7. [x] Planning files (`task_plan.md` and `progress.md`) up to date.
-8. [x] All 5 smoke and widget tests pass.
-9. [x] Static analysis passes with 0 issues (`flutter analyze`).
-10. [x] Android debug build succeeds (`flutter build apk --debug`).
-11. [x] Original asset library (`BlockPuzzle_Asset_Library/`) is completely untouched.
-12. [x] No unnecessary dependencies or code-generation tools added.
+### 3. Asset Tracking, Licensing & Tooling
+- [x] Copied license documents to `docs/licenses/` (Kenney CC0, SIL OFL 1.1).
+- [x] Created `docs/ASSET_LICENSES.md`.
+- [x] Created `docs/ASSET_CATALOG.md` with full origin-to-production mapping, purposes, and SHA256 checksums.
+- [x] Generated `docs/asset_manifest.json` with structured metadata.
+- [x] Implemented `tooling/verify_assets.py` (Python stdlib) validating manifest integrity, SHA256 hashes, path containment, and category-extension alignment (all 6 checks passed).
+
+### 4. Flutter Asset Registration & Constants
+- [x] Updated `pubspec.yaml` to declare font families (`Fredoka`, `Nunito`) and production asset directories.
+- [x] Ran `flutter pub get` (exit code 0).
+- [x] Created `lib/core/constants/asset_paths.dart` with strongly-typed, logically grouped constants.
+
+### 5. Game Design System & Theme Engine
+- [x] Created `lib/core/theme/app_colors.dart` with premium dark arcade palette (Navy `#101A2B`, board surface `#1B2940`, empty cell `#2B3D57`, and 8 vibrant block colors).
+- [x] Created `lib/core/theme/app_spacing.dart` (4-pixel grid multiples: xs, sm, md, lg, xl, xxl).
+- [x] Created `lib/core/theme/app_radii.dart` (small, medium, large, extraLarge, pill, and 48px minimum touch targets).
+- [x] Created `lib/core/theme/app_typography.dart` (TextTheme mapping Fredoka to display/headlines/score and Nunito to body/labels).
+- [x] Updated `lib/core/theme/app_theme.dart` to synthesize design tokens into Material 3 `ThemeData`.
+
+### 6. Development Design System Preview
+- [x] Created `lib/shared/widgets/design_system_preview.dart` displaying color palette, typography hierarchy, button styles, cards, spacing/radius tokens, and imported icon assets.
+
+### 7. Automated Testing & Verification
+- [x] Created `test/core/theme/app_colors_test.dart` (including WCAG contrast calculations: normal text >= 4.5:1, large text >= 3:1).
+- [x] Created `test/core/theme/app_typography_test.dart`.
+- [x] Created `test/core/constants/asset_paths_test.dart`.
+- [x] Created `test/shared/widgets/design_system_preview_test.dart`.
+- [x] Ran `python tooling/verify_assets.py` (Passed, 0 errors).
+- [x] Ran `dart format .` (All files formatted cleanly).
+- [x] Ran `flutter analyze` (Passed, 0 issues).
+- [x] Ran `flutter test` (All 19 tests passed).
+
+## Phase 02A Acceptance Criteria Verification
+1. [x] Asset library is strictly untouched (`BlockPuzzle_Asset_Library/` clean).
+2. [x] Only genuinely useful assets are copied to `assets/` with snake_case naming (38 files total).
+3. [x] Licenses and catalogs are documented with SHA256 checksums.
+4. [x] Python verification script passes with 0 errors.
+5. [x] Fonts are declared in `pubspec.yaml` and load offline.
+6. [x] Design tokens (`AppColors`, `AppSpacing`, `AppRadii`, `AppTypography`) are established and clean.
+7. [x] Color palette meets WCAG contrast criteria (Primary text on background ratio > 15:1; secondary text > 8:1).
+8. [x] `DesignSystemPreview` renders all tokens responsively without overflow.
+9. [x] All unit, widget, and contrast tests pass with 0 failures (19/19 passed).
+10. [x] `flutter analyze` reports 0 issues.
