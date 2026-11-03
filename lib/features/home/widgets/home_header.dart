@@ -56,7 +56,8 @@ class HomeHeader extends StatelessWidget {
             button: true,
             label: 'Open Settings',
             child: Container(
-              constraints: AppRadii.touchTargetConstraints,
+              width: AppRadii.minTouchTarget + 2.0,
+              height: AppRadii.minTouchTarget + 2.0,
               decoration: BoxDecoration(
                 color: AppColors.elevatedSurface,
                 borderRadius: AppRadii.borderMedium,
@@ -66,6 +67,8 @@ class HomeHeader extends StatelessWidget {
                 ),
               ),
               child: IconButton(
+                constraints: AppRadii.touchTargetConstraints,
+                padding: EdgeInsets.zero,
                 iconSize: 22,
                 tooltip: 'Settings',
                 icon: Image.asset(

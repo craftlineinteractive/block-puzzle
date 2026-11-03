@@ -61,14 +61,18 @@ class HomeHeroCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'READY FOR A CHALLENGE?',
-                      style: TextStyle(
-                        fontFamily: AppTypography.fontNunito,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.4,
-                        color: AppColors.primaryAccent,
+                    Expanded(
+                      child: Text(
+                        'READY FOR A CHALLENGE?',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: AppTypography.fontNunito,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                          color: AppColors.primaryAccent,
+                        ),
                       ),
                     ),
                   ],
@@ -80,11 +84,15 @@ class HomeHeroCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text(
-                        'MAKE YOUR\nNEXT MOVE\nCOUNT',
-                        style: AppTypography.displayMedium.copyWith(
-                          height: 1.15,
-                          color: AppColors.textPrimary,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'MAKE YOUR\nNEXT MOVE\nCOUNT',
+                          style: AppTypography.displayMedium.copyWith(
+                            height: 1.15,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
                       ),
                     ),

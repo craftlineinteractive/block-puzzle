@@ -97,6 +97,8 @@ class GameModeCard extends StatelessWidget {
                   Flexible(
                     child: Text(
                       title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTypography.titleLarge.copyWith(
                         letterSpacing: 0.5,
                         color: AppColors.textPrimary,
@@ -105,7 +107,7 @@ class GameModeCard extends StatelessWidget {
                   ),
                   if (badgeText != null) ...[
                     const SizedBox(width: AppSpacing.sm),
-                    _buildBadge(),
+                    Flexible(child: _buildBadge()),
                   ],
                 ],
               ),
@@ -141,8 +143,8 @@ class GameModeCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              width: 38,
-              height: 38,
+              width: 34,
+              height: 34,
               decoration: BoxDecoration(
                 color: accentColor.withValues(alpha: 0.15),
                 borderRadius: AppRadii.borderMedium,
@@ -154,7 +156,13 @@ class GameModeCard extends StatelessWidget {
               alignment: Alignment.center,
               child: _buildIcon(),
             ),
-            if (badgeText != null) Flexible(child: _buildBadge()),
+            if (badgeText != null)
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: _buildBadge(),
+                ),
+              ),
           ],
         ),
         const SizedBox(height: AppSpacing.smMd),

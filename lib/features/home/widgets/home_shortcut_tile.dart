@@ -36,7 +36,7 @@ class HomeShortcutTile extends StatelessWidget {
           child: Container(
             constraints: const BoxConstraints(minHeight: 48),
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
+              horizontal: AppSpacing.xs + 2,
               vertical: AppSpacing.sm,
             ),
             decoration: BoxDecoration(
@@ -51,7 +51,7 @@ class HomeShortcutTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildIcon(),
-                const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: 4),
                 Flexible(
                   child: Text(
                     label,
@@ -59,7 +59,7 @@ class HomeShortcutTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: AppTypography.fontNunito,
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
                     ),
