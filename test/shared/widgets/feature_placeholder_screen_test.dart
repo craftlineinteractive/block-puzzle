@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,10 +11,10 @@ import 'package:blockpuzzle/shared/widgets/feature_placeholder_screen.dart';
 void main() {
   group('FeaturePlaceholderScreen Tests', () {
     testWidgets('Renders correct metadata for Classic route', (tester) async {
-      final router = createAppRouter(initialLocation: AppRoutes.classic);
-
       await tester.pumpWidget(
-        ProviderScope(child: BlockPuzzleApp(routerConfig: router)),
+        MaterialApp(
+          home: FeaturePlaceholderScreen.fromRoute(AppRoutes.classic),
+        ),
       );
       await tester.pumpAndSettle();
 

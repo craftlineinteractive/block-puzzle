@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:blockpuzzle/app/block_puzzle_app.dart';
 import 'package:blockpuzzle/app/router/app_router.dart';
 import 'package:blockpuzzle/app/router/app_routes.dart';
+import 'package:blockpuzzle/features/game/presentation/game_screen.dart';
 import 'package:blockpuzzle/features/home/presentation/home_screen.dart';
 import 'package:blockpuzzle/features/home/widgets/home_header.dart';
 import 'package:blockpuzzle/features/home/widgets/home_hero_card.dart';
@@ -35,26 +36,25 @@ void main() {
       expect(find.byType(HomeShortcutsBar), findsOneWidget);
     });
 
-    testWidgets(
-      'Tapping PLAY CLASSIC button in Hero card pushes Classic placeholder',
-      (tester) async {
-        final router = createAppRouter(initialLocation: AppRoutes.home);
+    testWidgets('Tapping PLAY CLASSIC button in Hero card pushes GameScreen', (
+      tester,
+    ) async {
+      final router = createAppRouter(initialLocation: AppRoutes.home);
 
-        await tester.pumpWidget(
-          ProviderScope(child: BlockPuzzleApp(routerConfig: router)),
-        );
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        ProviderScope(child: BlockPuzzleApp(routerConfig: router)),
+      );
+      await tester.pumpAndSettle();
 
-        final playButton = find.text('PLAY CLASSIC');
-        expect(playButton, findsOneWidget);
+      final playButton = find.text('PLAY CLASSIC');
+      expect(playButton, findsOneWidget);
 
-        await tester.tap(playButton);
-        await tester.pumpAndSettle();
+      await tester.tap(playButton);
+      await tester.pumpAndSettle();
 
-        expect(find.byType(FeaturePlaceholderScreen), findsOneWidget);
-        expect(find.text('Classic Mode'), findsOneWidget);
-      },
-    );
+      expect(find.byType(GameScreen), findsOneWidget);
+      expect(find.bySemanticsLabel('10 by 10 puzzle board'), findsOneWidget);
+    });
 
     testWidgets(
       'Tapping Settings button in Header pushes Settings placeholder',

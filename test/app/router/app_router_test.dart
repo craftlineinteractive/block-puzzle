@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:blockpuzzle/app/block_puzzle_app.dart';
 import 'package:blockpuzzle/app/router/app_router.dart';
 import 'package:blockpuzzle/app/router/app_routes.dart';
+import 'package:blockpuzzle/features/game/presentation/game_screen.dart';
 import 'package:blockpuzzle/features/home/presentation/home_screen.dart';
 import 'package:blockpuzzle/features/splash/presentation/splash_screen.dart';
 import 'package:blockpuzzle/shared/widgets/feature_placeholder_screen.dart';
@@ -26,20 +27,17 @@ void main() {
       expect(find.byType(HomeScreen), findsOneWidget);
     });
 
-    testWidgets(
-      'Classic route renders FeaturePlaceholderScreen with Classic info',
-      (tester) async {
-        final router = createAppRouter(initialLocation: AppRoutes.classic);
+    testWidgets('Classic route renders GameScreen', (tester) async {
+      final router = createAppRouter(initialLocation: AppRoutes.classic);
 
-        await tester.pumpWidget(
-          ProviderScope(child: BlockPuzzleApp(routerConfig: router)),
-        );
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        ProviderScope(child: BlockPuzzleApp(routerConfig: router)),
+      );
+      await tester.pumpAndSettle();
 
-        expect(find.byType(FeaturePlaceholderScreen), findsOneWidget);
-        expect(find.text('Classic Mode'), findsOneWidget);
-      },
-    );
+      expect(find.byType(GameScreen), findsOneWidget);
+      expect(find.bySemanticsLabel('10 by 10 puzzle board'), findsOneWidget);
+    });
 
     testWidgets(
       'Settings route renders FeaturePlaceholderScreen with Settings info',

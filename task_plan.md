@@ -1,69 +1,79 @@
-# Task Plan: Block Puzzle - Phase 03B (Verification, Navigation & Accessibility Audit)
+# Phase 04A: Immersive Arcade Gameplay Screen & Responsive 10x10 Board UI Plan
 
-## Phase 03B Objective
-Execute an exhaustive audit and verification of all Phase 03 code, GoRouter navigation routes, Splash Screen animations, Home Screen presentation, responsive layouts across 320dp–430dp+, WCAG AAA accessibility, touch target sizing (>= 48dp), performance optimization, automated test suite expansion, and live Android emulator verification.
+**Goal:** Build a premium, arcade-styled 10x10 puzzle gameplay screen featuring an anti-aliased glossy CustomPainter board, compact game HUD with score display, three-piece preview tray ("YOUR NEXT BLOCKS"), and game-styled pause overlay, wired to `/classic`.
 
-## Current Project Architecture
-- **Framework**: Flutter 3.44.9 (Channel stable)
-- **Dart SDK**: 3.12.2 (Environment sdk: ^3.12.2)
-- **Dependencies**: `flutter`, `cupertino_icons: ^1.0.8`, `flutter_riverpod: ^3.4.3`, `go_router: ^18.1.2`
-- **Dev Dependencies**: `flutter_test`, `flutter_lints: ^6.0.0`
-- **Design Tokens**: `AppColors`, `AppSpacing`, `AppRadii`, `AppTypography`, `AssetPaths`
-- **Standing Requirement**: Auto-compile and install updated build onto active emulator (`emulator-5554`) upon phase completion.
+**Status:** Completed & Live Verified on Emulator (`emulator-5554`)
 
-## Audit & Verification Tasks
+**Architecture:** Presentation-only gameplay UI layered under `lib/features/game/`. CustomPainter-based board rendering with `RepaintBoundary` isolation. Decoupled presentation preview data model `GameScreenPreviewData`. Seamless GoRouter integration replacing the `/classic` placeholder.
 
-### 1. Complete Code Review & Integrity Audit
-- [x] Inspect all files created/modified in Phase 03:
-  - `main.dart`, `block_puzzle_app.dart`, `app_router.dart`, `app_routes.dart`
-  - `splash_screen.dart`, `puzzle_logo_mark.dart`, `splash_tile_animation.dart`
-  - `home_screen.dart`, `home_header.dart`, `home_hero_card.dart`, `game_mode_card.dart`, `game_modes_section.dart`, `home_shortcut_tile.dart`, `home_background_decoration.dart`
-  - `feature_placeholder_screen.dart`
-- [x] Verify clean imports, lack of dead code, const constructors, and resource disposal.
+**Tech Stack:** Flutter 3.44.9, Dart 3.12.2, Riverpod 3.4.3, GoRouter 18.1.2, CustomPainter, Material 3 Dark Arcade Design System.
 
-### 2. Routing Verification
-- [x] Test initial route (`/`), splash-to-home transition.
-- [x] Test all 11 named navigation routes (`/`, `/home`, `/classic`, `/levels`, `/time-attack`, `/daily-challenge`, `/zen`, `/statistics`, `/themes`, `/achievements`, `/settings`, `/design-preview`).
-- [x] Test Android back-button behavior and `context.canPop()`.
-- [x] Test unknown-route handling (404 error page).
+---
 
-### 3. Splash Screen Audit
-- [x] Check logo sizing, tile alignment, and animation timing (1600ms).
-- [x] Verify single-shot navigation guard (`_hasNavigated`).
-- [x] Verify system reduced-motion support (`disableAnimations: true`).
-- [x] Verify `AnimationController` disposal without memory leaks.
-- [x] Test splash behavior across small and large screens.
+## 1. Visual & Layout Architecture
+- **Root Screen**: `GameScreen` with dark immersive backdrop, subtle radial ambient glow, and `SafeArea`.
+- **Top HUD**: Compact row with Pause button (left, 48x48dp target), centralized `ScoreDisplay` ("SCORE" / "0000"), and Best Score indicator ("BEST" / "—").
+- **10x10 Board**: `BoardWidget` utilizing `BoardPainter` with `RepaintBoundary`. 10x10 grid (100 cells) with uniform spacing, subtle cell bevels, and glossy block rendering (`BlockTilePainter`).
+- **Piece Tray**: `BlockTrayPreview` titled "YOUR NEXT BLOCKS" displaying 3 distinct preview pieces (4-cell horizontal line, 2x2 square, 3x2 L-shape) using `PreviewBlockWidget`.
+- **Pause Overlay**: `PauseOverlay` with dark translucent barrier, glowing arcade modal panel, "RESUME" (dismiss) and "HOME" (`context.go('/home')`).
+- **Routing**: Updated `/classic` in `app_router.dart` to render `const GameScreen()`.
 
-### 4. Home Screen Visual & Hierarchy Audit
-- [x] Header: Mini logo mark, Fredoka title, Nunito subtitle, 48x48dp Settings action.
-- [x] Hero: Geometric blocks illustration, "PLAY CLASSIC" prominent CTA button.
-- [x] Game Modes: All 5 modes (Classic, Levels, Time Attack, Daily, Zen) with proper badges and colors.
-- [x] Secondary Shortcuts: Stats, Themes, Trophies in quick hubs bar.
-- [x] Anti-UI-Slop: Zero fake coins, fake leaderboards, or fabricated player data.
+---
 
-### 5. Responsive Layout Audit (320dp, 360dp, 393dp, 430dp, Tablets)
-- [x] Add multi-screen responsive widget test (`test/features/home/responsive_layout_test.dart`) covering widths 320, 360, 393, 430, and 600.
-- [x] Verify zero `RenderFlex` overflow across all test viewports and font scales.
+## 2. Directory & File Inventory
+```
+lib/features/game/
+├── presentation/
+│   ├── game_screen.dart
+│   ├── models/
+│   │   └── game_screen_preview_data.dart
+│   └── painters/
+│       ├── board_painter.dart
+│       └── block_tile_painter.dart
+└── widgets/
+    ├── game_hud.dart
+    ├── score_display.dart
+    ├── board_widget.dart
+    ├── block_tray_preview.dart
+    ├── preview_block_widget.dart
+    └── pause_overlay.dart
+```
 
-### 6. Accessibility & Contrast Audit
-- [x] Verify semantic labels on all interactive elements.
-- [x] Verify button tooltips.
-- [x] Verify WCAG AAA normal text contrast (>= 4.5:1) and large text contrast (>= 3.0:1).
-- [x] Verify minimum 48×48dp touch targets on all buttons and tiles.
-- [x] Add accessibility audit widget test (`test/core/theme/accessibility_test.dart`).
+---
 
-### 7. Performance & Memory Audit
-- [x] Ensure `AnimationController` is disposed cleanly.
-- [x] Verify `GoRouter` singleton is maintained via Riverpod without recreation on rebuilds.
-- [x] Ensure `const` constructors are used extensively to prevent unnecessary widget rebuilds.
+## 3. Implementation Checklist & Verification Status
 
-### 8. Automated Testing & Verification Commands
-- [x] Run `python tooling/verify_assets.py` (38/38 assets, 0 errors).
-- [x] Run `dart format .` (35 files cleanly formatted).
-- [x] Run `flutter analyze` (0 issues).
-- [x] Run `flutter test` (All 56 tests passing).
-- [x] Run `flutter build apk --debug` (Succeeded in 24.9s).
-
-### 9. Visual Device Verification on Android Emulator
-- [x] Install updated APK to `emulator-5554`.
-- [x] Verify live navigation and capture screenshots for report.
+- [x] **Task 1: Presentation Preview Data Model**
+  - Created `lib/features/game/presentation/models/game_screen_preview_data.dart` (`PreviewPiece`, `GameScreenPreviewData.empty()`, `GameScreenPreviewData.samplePreview()`).
+- [x] **Task 2: Glossy Tile & Board Custom Painters**
+  - Created `lib/features/game/presentation/painters/block_tile_painter.dart` with dual-stop gradients, top specular sheen, and bevel shadows.
+  - Created `lib/features/game/presentation/painters/board_painter.dart` drawing 100 anti-aliased cells with uniform 3.0px gaps and inset frame shadow.
+- [x] **Task 3: Board Widget**
+  - Created `lib/features/game/widgets/board_widget.dart` with `RepaintBoundary`, `AspectRatio(1.0)`, and accessible semantics.
+- [x] **Task 4: Game HUD & Score Display**
+  - Created `lib/features/game/widgets/score_display.dart` with Fredoka tabular numerals and glowing text shadow.
+  - Created `lib/features/game/widgets/game_hud.dart` with 48x48dp pause button, centered score, and best score.
+- [x] **Task 5: Three-Piece Tray Preview**
+  - Created `lib/features/game/widgets/preview_block_widget.dart` and `lib/features/game/widgets/block_tray_preview.dart` with "YOUR NEXT BLOCKS" header and 3 glossy preview slots.
+- [x] **Task 6: Pause Overlay**
+  - Created `lib/features/game/widgets/pause_overlay.dart` with translucent modal barrier, glowing panel, and 48dp RESUME / HOME actions.
+- [x] **Task 7: Game Screen Integration & Route Wiring**
+  - Created `lib/features/game/presentation/game_screen.dart`.
+  - Wired `/classic` in `lib/app/router/app_router.dart` to `const GameScreen()`.
+- [x] **Task 8: Comprehensive Automated Tests**
+  - `test/features/game/board_rendering_test.dart`
+  - `test/features/game/game_hud_test.dart`
+  - `test/features/game/block_tray_test.dart`
+  - `test/features/game/pause_overlay_test.dart`
+  - `test/features/game/game_screen_responsive_test.dart`
+  - Total tests: 75/75 passing.
+- [x] **Task 9: Code Quality Verification**
+  - `dart format .`: 0 unformatted files.
+  - `flutter analyze`: 0 issues.
+  - `flutter test`: 75/75 passed.
+  - `flutter build apk --debug`: Built `app-debug.apk` in 77.2s.
+- [x] **Task 10: Live Emulator Deployment & Verification**
+  - Deployed build to `emulator-5554`.
+  - Verified Home -> Classic screen transition.
+  - Verified 10x10 board, top HUD, and bottom piece tray.
+  - Verified Pause modal overlay activation, Resume, and return to Home.

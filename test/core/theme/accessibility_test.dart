@@ -70,7 +70,7 @@ void main() {
     testWidgets(
       'Placeholder screen Back to Home button enforces >= 48dp touch target',
       (tester) async {
-        final router = createAppRouter(initialLocation: AppRoutes.classic);
+        final router = createAppRouter(initialLocation: AppRoutes.levels);
 
         await tester.pumpWidget(
           ProviderScope(child: BlockPuzzleApp(routerConfig: router)),

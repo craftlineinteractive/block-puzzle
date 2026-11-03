@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+import '../../features/game/presentation/game_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../shared/widgets/design_system_preview.dart';
@@ -64,13 +65,13 @@ GoRouter createAppRouter({
         ),
       ),
 
-      // Classic Game Mode Placeholder
+      // Classic Game Mode Screen
       GoRoute(
         path: AppRoutes.classic,
         name: AppRoutes.classicName,
         pageBuilder: (context, state) => _buildGameTransitionPage(
           key: state.pageKey,
-          child: FeaturePlaceholderScreen.fromRoute(AppRoutes.classic),
+          child: const GameScreen(),
         ),
       ),
 

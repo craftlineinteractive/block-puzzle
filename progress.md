@@ -1,25 +1,28 @@
-# Progress Log: Block Puzzle - Phase 03B
+# Progress Log: Block Puzzle - Phase 04A
 
 ## Current Project Status
-- **Current Phase**: Phase 03B - Splash Screen, Home Screen, Navigation and Accessibility Verification
-- **Status**: Completed & Verified on Emulator (`emulator-5554`)
+- **Current Phase**: Phase 04A - Immersive Arcade Gameplay Screen & Responsive 10x10 Board UI
+- **Status**: Completed and Verified on Device
+- **Timestamp**: 2026-11-03
 
 ## Standing Instruction
-- **Auto-Deploy on Phase Completion**: Build and install updated APK to `emulator-5554` upon completion. [COMPLETED for Phase 03B]
+- **Auto-Deploy on Phase Completion**: Build and install updated APK to `emulator-5554` upon completion. [COMPLETED]
 
-## Completed Tasks
-- [x] Performed complete code review across all 15 Phase 03 source and shared files.
-- [x] Verified declarative routing via `GoRouter` across all 11 routes, back-stack popping, and 404 unknown route handling.
-- [x] Audited Splash screen: 1600ms entrance curve, single-shot navigation guard, system reduced-motion support, clean `AnimationController` disposal.
-- [x] Audited Home screen visual hierarchy: Anti-UI-slop enforcement (no fake stats, no fake coins), prominent "PLAY CLASSIC" CTA, 5 game modes, and quick hubs bar.
-- [x] Added `test/features/home/responsive_layout_test.dart` and eliminated `RenderFlex` overflows across 320dp, 360dp, 393dp, 430dp, and 600dp viewports, as well as 1.5x font scale.
-- [x] Added `test/core/theme/accessibility_test.dart` and verified that all interactive elements (Settings button, Play Classic, mode cards, shortcut tiles, back buttons) enforce `>= 48dp` touch targets and meet WCAG AAA text contrast (>= 7:1 for normal, >= 3:1 for large).
-- [x] Executed asset verification script: `python tooling/verify_assets.py` (38/38 assets, 0 errors).
-- [x] Executed formatter: `dart format .` (35 files cleanly formatted).
-- [x] Executed static analysis: `flutter analyze` (**0 issues found**).
-- [x] Executed complete test suite: `flutter test` (**All 56 tests passed**).
-- [x] Built debug APK: `flutter build apk --debug` (**Succeeded**).
-- [x] Deployed and verified on active Android emulator (`emulator-5554`).
-
-## Next Actions (Pending User Direction)
-- Await user approval and prompt for **Phase 04: Core Game Engine Setup & 10x10 Grid Board Architecture**.
+## Phase 04A Implementation Checklist
+- [x] Initialized Phase 04A plan in `task_plan.md`.
+- [x] Task 1: Create `GameScreenPreviewData` presentation model (`game_screen_preview_data.dart`).
+- [x] Task 2: Create `BlockTilePainter` and `BoardPainter` custom painters (`block_tile_painter.dart`, `board_painter.dart`).
+- [x] Task 3: Create `BoardWidget` with `RepaintBoundary` and responsive constraints (`board_widget.dart`).
+- [x] Task 4: Create `ScoreDisplay` and `GameHUD` (`score_display.dart`, `game_hud.dart`).
+- [x] Task 5: Create `PreviewBlockWidget` and `BlockTrayPreview` (`preview_block_widget.dart`, `block_tray_preview.dart`).
+- [x] Task 6: Create arcade-styled `PauseOverlay` (`pause_overlay.dart`).
+- [x] Task 7: Create `GameScreen` and wire `/classic` route in `app_router.dart`.
+- [x] Task 8: Implement unit, widget, and responsive test suite (75 total tests passing, 0 failures).
+- [x] Task 9: Run verification commands (`dart format .`, `flutter analyze` [0 issues], `flutter test` [75/75 passed], `flutter build apk --debug` [Success in 77.2s]).
+- [x] Task 10: Deploy and verify on Android emulator (`emulator-5554`):
+  - Streamed install succeeded.
+  - Classic mode launched via Hero Card CTA ("PLAY CLASSIC").
+  - 10x10 custom-painted glossy board verified.
+  - Next blocks tray preview verified.
+  - Modal pause overlay and resume/home navigation verified.
+  - Screenshots pulled and verified.
