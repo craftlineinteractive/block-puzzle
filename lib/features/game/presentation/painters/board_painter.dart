@@ -12,6 +12,7 @@ import 'block_tile_painter.dart';
 /// 2. Exactly 100 cells (10 rows x 10 columns) with uniform pixel-perfect gaps.
 /// 3. Empty cells with subtle inset shading.
 /// 4. Occupied cells with glossy arcade-styled specular gradients.
+/// 5. Full canvas clipping to guarantee zero boundary bleeding.
 class BoardPainter extends CustomPainter {
   const BoardPainter({
     required this.grid,
@@ -41,7 +42,10 @@ class BoardPainter extends CustomPainter {
     if (size.isEmpty) return;
 
     final side = size.shortestSide;
-    final boardRect = Rect.fromLTWH(0, 0, side, side);
+    final offsetX = (size.width - side) / 2.0;
+    final offsetY = (size.height - side) / 2.0;
+
+    final boardRect = Rect.fromLTWH(offsetX, offsetY, side, side);
     final boardRRect = RRect.fromRectAndRadius(
       boardRect,
       const Radius.circular(AppRadii.large),
@@ -61,29 +65,24 @@ class BoardPainter extends CustomPainter {
       ..isAntiAlias = true;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(1, 1, side - 2, side - 2),
+        Rect.fromLTWH(offsetX + 1, offsetY + 1, side - 2, side - 2),
         const Radius.circular(AppRadii.large - 1),
       ),
       shadowPaint,
     );
 
-    // 3. Draw Outer Frame Border
-    final borderPaint = Paint()
-      ..color = AppColors.emptyCellBorder
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
-      ..isAntiAlias = true;
-    canvas.drawRRect(boardRRect, borderPaint);
-
-    // 4. Calculate 10x10 Grid Metrics
+    // 3. Calculate 10x10 Grid Metrics
     final gridAvailableWidth = side - (outerPadding * 2);
     final totalGaps = (cols - 1) * gap;
     final cellSize = (gridAvailableWidth - totalGaps) / cols;
 
-    final startX = outerPadding;
-    final startY = outerPadding;
+    final startX = offsetX + outerPadding;
+    final startY = offsetY + outerPadding;
 
-    // 5. Draw Exactly 100 Grid Cells (10x10)
+    // 4. Draw Exactly 100 Grid Cells Clipped to Board Frame
+    canvas.save();
+    canvas.clipRRect(boardRRect);
+
     for (int r = 0; r < rows; r++) {
       final y = startY + r * (cellSize + gap);
       final rowColors = r < grid.length ? grid[r] : null;
@@ -108,6 +107,16 @@ class BoardPainter extends CustomPainter {
         }
       }
     }
+
+    canvas.restore();
+
+    // 5. Draw Outer Frame Border on Top (Guarantees crisp outer edge)
+    final borderPaint = Paint()
+      ..color = AppColors.emptyCellBorder
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..isAntiAlias = true;
+    canvas.drawRRect(boardRRect, borderPaint);
   }
 
   @override

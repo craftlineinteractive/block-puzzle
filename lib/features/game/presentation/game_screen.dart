@@ -56,6 +56,7 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _handleHome() {
+    setState(() => _isPaused = false);
     context.go(AppRoutes.home);
   }
 

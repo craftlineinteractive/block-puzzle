@@ -30,32 +30,34 @@ class BoardWidget extends StatelessWidget {
     return Semantics(
       label: '10 by 10 puzzle board',
       container: true,
-      child: AspectRatio(
-        aspectRatio: 1.0,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(AppRadii.large),
+      child: Center(
+        child: AspectRatio(
+          aspectRatio: 1.0,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(AppRadii.large),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.40),
+                  blurRadius: 16.0,
+                  offset: const Offset(0, 6),
+                ),
+                BoxShadow(
+                  color: AppColors.primaryAccent.withValues(alpha: 0.08),
+                  blurRadius: 24.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.40),
-                blurRadius: 16.0,
-                offset: const Offset(0, 6),
-              ),
-              BoxShadow(
-                color: AppColors.primaryAccent.withValues(alpha: 0.08),
-                blurRadius: 24.0,
-                spreadRadius: 2.0,
-              ),
-            ],
-          ),
-          child: RepaintBoundary(
-            child: CustomPaint(
-              painter: BoardPainter(
-                grid: grid,
-                gap: gap,
-                cellRadius: cellRadius,
+            child: RepaintBoundary(
+              child: CustomPaint(
+                painter: BoardPainter(
+                  grid: grid,
+                  gap: gap,
+                  cellRadius: cellRadius,
+                ),
               ),
             ),
           ),
@@ -64,4 +66,3 @@ class BoardWidget extends StatelessWidget {
     );
   }
 }
-
